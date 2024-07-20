@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Image Processing</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.pexels.com/photos/1673973/pexels-photo-1673973.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'); /* Path to your background image */
+            background-color: #22c519; /* Fallback color if the image is not available */
+            background-size: cover; /* Cover the entire background */
+            background-repeat: no-repeat; /* Do not repeat the background image */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <p style="color: yellow; font-weight: bold; font-size: larger;">PES1UG22CS078 Amruth R</p>
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title text-center mb-4">Image Processing</h3>
+                        <form id="imageForm">
+                            <div class="form-group">
+                                <label for="fileInput">Select Image(s):</label>
+                                <input type="file" id="fileInput" class="form-control-file" multiple>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-block" onclick="processImages()">Process Images</button>
+                        </form>
+                    </div>
+                </div>
+                <div id="output" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function processImages() {
+            const files = document.getElementById('fileInput').files;
+            const formData = new FormData();
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                formData.append('images', file);
+            }
+
+            fetch('/process', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                const output = document.getElementById('output');
+                output.innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
+            })
+            .catch(error => {
+                console.error('Error processing images:', error);
+                const output = document.getElementById('output');
+                output.innerHTML = `<div class="alert alert-danger" role="alert">Error processing images. Please try again.</div>`;
+            });
+        }
+    </script>
+</body>
+</html>
